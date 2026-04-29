@@ -207,7 +207,135 @@
     .print-status { display: none !important; }
   }
 
-  ::-webkit-scrollbar { width: 5px; }
+  /* Desktop: hide mobile-only bottom row */
+  .ci-bottom-mobile { display: none; }
+
+  /* ── MOBILE ──────────────────────────────────────────────────────── */
+  @media (max-width: 640px) {
+    header { padding: .7rem 1rem; gap: .6rem; }
+    header h1 { font-size: .95rem; }
+    .hbadge { display: none; }
+    main { padding: .9rem .6rem 2rem; }
+
+    /* Cards 2x2 */
+    .cards { grid-template-columns: repeat(2,1fr); gap: .5rem; margin-bottom: .9rem; }
+    .card { padding: .6rem .8rem; }
+    .card-v { font-size: 1.35rem; }
+    .card-l { font-size: .6rem; }
+
+    /* Toolbar */
+    .toolbar { gap: .35rem; margin-bottom: .7rem; }
+    .btn-t { font-size: .7rem; padding: .32em .65em; }
+
+    /* Search */
+    .search-input { font-size: .82rem; }
+
+    /* Hide desktop table header */
+    .list-head { display: none; }
+
+    /* Item card: full vertical layout */
+    .ci { border-radius: 8px; border: 1px solid var(--border) !important; margin-bottom: .4rem; }
+    .ci:last-child { margin-bottom: 0; }
+    #checklist { gap: 0; }
+
+    /* Override grid with flex column */
+    .ci-row {
+      display: flex !important;
+      flex-direction: column !important;
+      gap: .5rem !important;
+      padding: .75rem .85rem .65rem !important;
+    }
+
+    /* Description: full width, readable */
+    .ci-name { width: 100%; }
+    .ci-desc {
+      font-size: .92rem !important;
+      line-height: 1.4 !important;
+      white-space: normal !important;
+      word-break: break-word !important;
+    }
+    .ci-ref { font-size: .62rem; margin-top: .15rem; }
+
+    /* Hide desktop qty cell and desktop buttons */
+    .ci-qty { display: none !important; }
+    .sc { display: none !important; }
+    .del-btn { display: none !important; }
+
+    /* Mobile bottom row: qty badge + R/F buttons + delete */
+    .ci-bottom-mobile {
+      display: flex !important;
+      align-items: center;
+      gap: .4rem;
+    }
+
+    .mob-qty {
+      display: inline-flex;
+      align-items: baseline;
+      gap: .18rem;
+      background: var(--surf2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: .22em .6em;
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+    .mob-qty .qn { font-family: var(--font); font-size: .9rem; font-weight: 800; color: var(--accent); }
+    .mob-qty .qu { font-size: .65rem; font-weight: 700; color: var(--dim); }
+    .ci.sr .mob-qty { background: var(--r-bg); border-color: var(--r-bd); }
+    .ci.sr .mob-qty .qn { color: var(--r-dk); }
+    .ci.sf .mob-qty { background: var(--f-bg); border-color: var(--f-bd); }
+    .ci.sf .mob-qty .qn { color: var(--f-dk); }
+    .ci.sp .mob-qty { background: #fff7ed; border-color: #fed7aa; }
+    .ci.sp .mob-qty .qn { color: #ea580c; }
+
+    .mob-clr {
+      width: 28px; height: 28px; border-radius: 50%;
+      border: 1.5px solid var(--border); color: var(--dim);
+      background: none; font-size: .68rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; transition: all .15s;
+    }
+    .mob-clr:hover { border-color: var(--text); color: var(--text); }
+
+    .mob-r, .mob-f {
+      flex: 1;
+      font-family: var(--font);
+      font-weight: 700;
+      font-size: .82rem;
+      padding: .45em .4em;
+      border-radius: 8px;
+      cursor: pointer;
+      border: 1.5px solid;
+      transition: all .15s;
+      text-align: center;
+      min-width: 0;
+    }
+    .mob-r { border-color: var(--r-bd); color: var(--r-dk); background: var(--r-bg); }
+    .mob-r.on { background: var(--r-dk); border-color: var(--r-dk); color: #fff; }
+    .mob-f { border-color: var(--f-bd); color: var(--f-dk); background: var(--f-bg); }
+    .mob-f.on { background: var(--f-dk); border-color: var(--f-dk); color: #fff; }
+
+    .mob-del {
+      width: 28px; height: 28px; flex-shrink: 0;
+      border: none; background: none; cursor: pointer;
+      color: var(--borders); font-size: .85rem;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 6px; transition: color .15s;
+    }
+    .mob-del:hover { color: var(--f-dk); }
+
+    /* Note row */
+    .note-row.on { padding: 0 .85rem .75rem; }
+
+    /* Add row: hide qty input, just name + button */
+    .add-row { grid-template-columns: 1fr auto; }
+    .add-qty { display: none; }
+
+    /* Resume banner */
+    .rb-btns { width: 100%; justify-content: flex-end; }
+  }
+
+    ::-webkit-scrollbar { width: 5px; }
 
   /* ── PRINT STYLES ─────────────────────────────────────────────────── */
   @media print {
@@ -665,11 +793,12 @@ function buildEl(item, idx) {
   var fOn  = item.status==='F' ? ' on' : '';
   var clrH = item.status ? '<button class="sb clr" onclick="setSt(' + idx + ',null)">&#10005;</button>' : '';
 
+  var mobClrH = item.status ? '<button class="mob-clr" onclick="setSt(' + idx + ',null)">&#10005;</button>' : '';
   wrap.innerHTML =
     '<div class="ci-row">' +
       '<div class="ci-name">' +
         '<span class="ci-desc" data-idx="' + idx + '">' + escH(item.desc) + '</span>' +
-        refH + rotH +
+        refH + rotH + partH +
       '</div>' +
       '<div class="ci-qty"><span class="qn">' + qStr + '</span><span class="qu">' + escH(item.unit||'ud') + '</span></div>' +
       '<div class="print-status" style="font-size:7.5pt; font-weight:700; padding:2pt 6pt; border-radius:4pt; border:1px solid; ' +
@@ -684,6 +813,13 @@ function buildEl(item, idx) {
         '<button class="sb f' + fOn + '" onclick="setSt(' + idx + ',\'F\')">Faltante</button>' +
       '</div>' +
       '<button class="del-btn" onclick="delItem(' + idx + ')" title="Eliminar">&#128465;</button>' +
+      '<div class="ci-bottom-mobile">' +
+        '<div class="mob-qty"><span class="qn">' + qStr + '</span><span class="qu">' + escH(item.unit||'ud') + '</span></div>' +
+        mobClrH +
+        '<button class="mob-r' + rOn + '" onclick="setSt(' + idx + ',\'R\')">&#10003; Recibido</button>' +
+        '<button class="mob-f' + fOn + '" onclick="setSt(' + idx + ',\'F\')">&#10007; Faltante</button>' +
+        '<button class="mob-del" onclick="delItem(' + idx + ')">&#128465;</button>' +
+      '</div>' +
     '</div>' +
     '<div class="note-row' + (item.status==='F' || (item.partial && !item.status) ? ' on' : '') + '" id="nr-' + idx + '">' +
       '<span class="ni">' + (item.partial && item.status !== 'F' ? '&#128203;' : '&#9888;&#65039;') + '</span>' +
@@ -752,6 +888,7 @@ function markAllR() {
   for (var i = 0; i < items.length; i++) if (!items[i].status) setSt(i, 'R');
 }
 function resetAllStatus() {
+  if (!confirm('Seguro que queres reiniciar todos los estados?\nSe perderan todos los marcados y notas.')) return;
   for (var i = 0; i < items.length; i++) { items[i].status = null; items[i].note = ''; }
   render(); persist();
 }
