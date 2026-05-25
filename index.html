@@ -898,7 +898,7 @@ function updateCards() {
   var f = items.filter(function(i){ return i.status==='F'; }).length;
   var totalUnits = 0;
   for (var i = 0; i < items.length; i++) {
-    totalUnits += (items[i].qty || 0);
+    if (!items[i].rotura) totalUnits += (items[i].qty || 0);
   }
   var totalUnitsStr = totalUnits % 1 === 0 ? String(totalUnits) : totalUnits.toFixed(2);
   document.getElementById('cv-t').textContent = items.length;
